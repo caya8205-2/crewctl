@@ -1,0 +1,35 @@
+{
+  "project": "crewctl",
+  "objective": "Smoke forced qc failure",
+  "status": "DONE",
+  "currentIteration": 2,
+  "maxIterations": 5,
+  "currentRole": "done",
+  "lastCompletedRole": "qc",
+  "nextRole": null,
+  "activeTask": {
+    "id": "task-012",
+    "title": "Smoke forced qc failure",
+    "priority": "normal"
+  },
+  "qualityGate": {
+    "minScore": 85,
+    "lastScore": 100,
+    "failedReasons": []
+  },
+  "allowedGlobs": [
+    "src/**",
+    ".agent/**",
+    "templates/**",
+    "README.md",
+    "package.json"
+  ],
+  "forbiddenGlobs": [
+    ".env*",
+    "secrets/**",
+    "infra/prod/**"
+  ],
+  "blockers": [],
+  "updatedAt": "2026-06-08T19:55:05.952Z",
+  "taskCounter": 12
+}

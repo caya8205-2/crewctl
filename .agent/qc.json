@@ -1,0 +1,14 @@
+{
+  "score": 100,
+  "passed": true,
+  "threshold": 85,
+  "categories": {
+    "correctness": 30,
+    "tests": 20,
+    "architecture": 20,
+    "maintainability": 15,
+    "security": 15
+  },
+  "failureReasons": [],
+  "routeBackTo": null
+}

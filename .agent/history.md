@@ -1,0 +1,136 @@
+﻿# History
+
+## Iteration Log
+- Scaffold created.
+- 2026-06-08T17:56:10.884Z: orchestrator/INIT -> planner/PLANNING
+- 2026-06-08T17:59:09.314Z: planner/PLANNING -> orchestrator/READY_FOR_IMPLEMENT (plan generated)
+- 2026-06-08T18:04:30.608Z: orchestrator/READY_FOR_IMPLEMENT -> implementer/IMPLEMENTING
+- 2026-06-08T18:04:30.610Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+
+- 2026-06-08T18:27:33.541Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T18:27:33.543Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T18:39:27.467Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T18:39:27.469Z: qc/QC -> done/DONE (score 100/85)
+- 2026-06-08T18:52:40.598Z: orchestrator/DONE -> planner/PLANNING (new task task-001: Build failure-path handling for crewctl)
+- 2026-06-08T19:06:20.479Z: planner/PLANNING -> orchestrator/READY_FOR_IMPLEMENT (plan generated)
+- 2026-06-08T19:06:21.143Z: orchestrator/READY_FOR_IMPLEMENT -> implementer/IMPLEMENTING
+- 2026-06-08T19:06:21.145Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T19:06:21.779Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T19:06:21.781Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T19:06:22.436Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T19:06:22.438Z: qc/QC -> done/DONE (score 100/85)
+- 2026-06-08T19:14:42.400Z: orchestrator/DONE -> planner/PLANNING (new task task-002: Verify full runner loop)
+- 2026-06-08T19:14:42.837Z: planner/PLANNING -> orchestrator/READY_FOR_IMPLEMENT (plan generated)
+- 2026-06-08T19:14:42.840Z: orchestrator/READY_FOR_IMPLEMENT -> implementer/IMPLEMENTING
+- 2026-06-08T19:14:42.842Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T19:14:42.844Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T19:14:42.846Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T19:14:42.847Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T19:14:42.849Z: qc/QC -> done/DONE (score 100/85)
+- 2026-06-08T19:15:19.398Z: orchestrator/DONE -> planner/PLANNING (new task task-003: Verify quiet full runner loop)
+- 2026-06-08T19:15:19.752Z: planner/PLANNING -> orchestrator/READY_FOR_IMPLEMENT (plan generated)
+- 2026-06-08T19:15:19.753Z: orchestrator/READY_FOR_IMPLEMENT -> implementer/IMPLEMENTING
+- 2026-06-08T19:15:19.755Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T19:15:19.756Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T19:15:19.758Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T19:15:19.759Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T19:15:19.761Z: qc/QC -> done/DONE (score 100/85)
+- 2026-06-08T19:30:14.004Z: orchestrator/DONE -> planner/PLANNING (new task task-004: Lock guard verification)
+- 2026-06-08T19:30:14.530Z: planner/PLANNING -> orchestrator/READY_FOR_IMPLEMENT (plan generated)
+- 2026-06-08T19:30:14.532Z: orchestrator/READY_FOR_IMPLEMENT -> implementer/IMPLEMENTING
+- 2026-06-08T19:30:14.534Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T19:30:14.536Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T19:30:14.538Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T19:30:14.540Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T19:30:14.542Z: qc/QC -> done/DONE (score 100/85)
+- 2026-06-08T19:34:40.932Z: orchestrator/DONE -> planner/PLANNING (new task task-005: Build OpenClaw adapter and failure path)
+- 2026-06-08T19:34:41.392Z: planner/PLANNING -> orchestrator/READY_FOR_IMPLEMENT (adaptive plan generated: failure-path)
+- 2026-06-08T19:34:41.395Z: orchestrator/READY_FOR_IMPLEMENT -> implementer/IMPLEMENTING
+- 2026-06-08T19:34:41.397Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T19:34:41.399Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T19:34:41.402Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T19:34:41.404Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T19:34:41.406Z: qc/QC -> done/DONE (score 100/85)
+- 2026-06-08T19:34:52.892Z: orchestrator/DONE -> planner/PLANNING (new task task-006: Test forced audit failure)
+- 2026-06-08T19:34:53.255Z: planner/PLANNING -> orchestrator/READY_FOR_IMPLEMENT (adaptive plan generated: failure-path)
+- 2026-06-08T19:34:53.258Z: orchestrator/READY_FOR_IMPLEMENT -> implementer/IMPLEMENTING
+- 2026-06-08T19:34:53.260Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T19:34:53.262Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T19:34:53.264Z: auditor/AUDITING -> orchestrator/AUDIT_FAILED (audit fail)
+- 2026-06-08T19:34:53.266Z: orchestrator/AUDIT_FAILED -> implementer/IMPLEMENTING
+- 2026-06-08T19:34:53.269Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T19:34:53.271Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T19:34:53.273Z: auditor/AUDITING -> orchestrator/AUDIT_FAILED (audit fail)
+- 2026-06-08T19:34:53.275Z: orchestrator/AUDIT_FAILED -> implementer/IMPLEMENTING
+- 2026-06-08T19:34:53.276Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T19:34:53.278Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T19:34:53.280Z: auditor/AUDITING -> orchestrator/AUDIT_FAILED (audit fail)
+- 2026-06-08T19:34:53.282Z: orchestrator/AUDIT_FAILED -> implementer/IMPLEMENTING
+- 2026-06-08T19:34:53.284Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T19:34:53.287Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T19:34:53.288Z: auditor/AUDITING -> orchestrator/AUDIT_FAILED (audit fail)
+- 2026-06-08T19:34:53.290Z: orchestrator/AUDIT_FAILED -> implementer/IMPLEMENTING
+- 2026-06-08T19:34:53.292Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T19:34:53.295Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T19:34:53.296Z: auditor/AUDITING -> orchestrator/AUDIT_FAILED (audit fail)
+- 2026-06-08T19:34:53.298Z: orchestrator -> orchestrator/BLOCKED (Max iterations reached before implementation retry)
+- 2026-06-08T19:34:54.071Z: orchestrator/BLOCKED -> planner/PLANNING (new task task-007: Test forced qc failure)
+- 2026-06-08T19:34:54.432Z: planner/PLANNING -> orchestrator/READY_FOR_IMPLEMENT (adaptive plan generated: failure-path)
+- 2026-06-08T19:34:54.434Z: orchestrator/READY_FOR_IMPLEMENT -> implementer/IMPLEMENTING
+- 2026-06-08T19:34:54.436Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T19:34:54.438Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T19:34:54.440Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T19:34:54.443Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T19:34:54.445Z: qc/QC -> orchestrator/QC_FAILED (score 10/85)
+- 2026-06-08T19:34:54.447Z: orchestrator/QC_FAILED -> implementer/IMPLEMENTING
+- 2026-06-08T19:34:54.449Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T19:34:54.451Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T19:34:54.453Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T19:35:07.340Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T19:35:07.343Z: qc/QC -> done/DONE (score 100/85)
+- 2026-06-08T19:41:07.175Z: orchestrator/DONE -> planner/PLANNING (new task task-008: Smoke happy path)
+- 2026-06-08T19:41:07.238Z: planner/PLANNING -> orchestrator/READY_FOR_IMPLEMENT (adaptive plan generated: general)
+- 2026-06-08T19:41:07.240Z: orchestrator/READY_FOR_IMPLEMENT -> implementer/IMPLEMENTING
+- 2026-06-08T19:41:07.242Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T19:41:07.244Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T19:41:07.246Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T19:41:07.248Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T19:41:07.250Z: qc/QC -> done/DONE (score 100/85)
+- 2026-06-08T19:41:07.310Z: orchestrator/DONE -> planner/PLANNING (new task task-009: Smoke forced qc failure)
+- 2026-06-08T19:41:07.366Z: planner/PLANNING -> orchestrator/READY_FOR_IMPLEMENT (adaptive plan generated: failure-path)
+- 2026-06-08T19:41:07.368Z: orchestrator/READY_FOR_IMPLEMENT -> implementer/IMPLEMENTING
+- 2026-06-08T19:41:07.370Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T19:41:07.372Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T19:41:07.374Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T19:41:07.376Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T19:41:07.378Z: qc/QC -> orchestrator/QC_FAILED (score 10/85)
+- 2026-06-08T19:41:07.380Z: orchestrator/QC_FAILED -> implementer/IMPLEMENTING
+- 2026-06-08T19:41:07.381Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T19:41:07.383Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T19:41:07.385Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T19:41:07.442Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T19:41:07.444Z: qc/QC -> done/DONE (score 100/85)
+- 2026-06-08T19:55:03.729Z: orchestrator/DONE -> planner/PLANNING (new task task-010: Manual real worker handoff smoke)
+- 2026-06-08T19:55:04.491Z: manual planner/PLANNING -> orchestrator/READY_FOR_IMPLEMENT (pass)
+- 2026-06-08T19:55:05.639Z: orchestrator/READY_FOR_IMPLEMENT -> planner/PLANNING (new task task-011: Smoke happy path)
+- 2026-06-08T19:55:05.743Z: planner/PLANNING -> orchestrator/READY_FOR_IMPLEMENT (adaptive plan generated: general)
+- 2026-06-08T19:55:05.745Z: orchestrator/READY_FOR_IMPLEMENT -> implementer/IMPLEMENTING
+- 2026-06-08T19:55:05.747Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T19:55:05.749Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T19:55:05.751Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T19:55:05.753Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T19:55:05.755Z: qc/QC -> done/DONE (score 100/85)
+- 2026-06-08T19:55:05.817Z: orchestrator/DONE -> planner/PLANNING (new task task-012: Smoke forced qc failure)
+- 2026-06-08T19:55:05.875Z: planner/PLANNING -> orchestrator/READY_FOR_IMPLEMENT (adaptive plan generated: failure-path)
+- 2026-06-08T19:55:05.877Z: orchestrator/READY_FOR_IMPLEMENT -> implementer/IMPLEMENTING
+- 2026-06-08T19:55:05.879Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T19:55:05.881Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T19:55:05.884Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T19:55:05.886Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T19:55:05.888Z: qc/QC -> orchestrator/QC_FAILED (score 10/85)
+- 2026-06-08T19:55:05.890Z: orchestrator/QC_FAILED -> implementer/IMPLEMENTING
+- 2026-06-08T19:55:05.891Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T19:55:05.893Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T19:55:05.895Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T19:55:05.950Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T19:55:05.952Z: qc/QC -> done/DONE (score 100/85)

@@ -1,0 +1,12 @@
+﻿node_modules/
+.agent/*.tmp
+.agent/*.bak
+coverage/
+dist/
+.DS_Store
+Thumbs.db
+*.log
+.env
+.env.*
+!.env.example
+

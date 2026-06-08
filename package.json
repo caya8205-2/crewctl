@@ -1,0 +1,29 @@
+﻿{
+  "name": "crewctl",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "agent:init": "node src/runner.mjs init",
+    "agent:status": "node src/runner.mjs status",
+    "agent:next": "node src/runner.mjs next",
+    "agent:transition": "node src/runner.mjs transition",
+    "agent:plan": "node src/runner.mjs transition PLANNING planner",
+    "agent:implement": "node src/runner.mjs transition IMPLEMENTING implementer",
+    "agent:audit": "node src/runner.mjs transition AUDITING auditor",
+    "agent:qc": "node src/runner.mjs transition QC qc",
+    "agent:run-planner": "node src/runner.mjs run-planner",
+    "agent:run-implementer": "node src/runner.mjs run-implementer",
+    "agent:run-auditor": "node src/runner.mjs run-auditor",
+    "agent:run-qc": "node src/runner.mjs run-qc",
+    "agent:new-task": "node src/runner.mjs new-task",
+    "agent:continue": "node src/runner.mjs continue",
+    "agent:run": "node src/runner.mjs run",
+    "agent:role-prompt": "node src/runner.mjs role-prompt",
+    "agent:complete-role": "node src/runner.mjs complete-role",
+    "agent:openclaw-adapter": "node src/runner.mjs openclaw-adapter",
+    "check": "node src/runner.mjs validate",
+    "test:smoke": "node tests/smoke.mjs"
+  }
+}
+
