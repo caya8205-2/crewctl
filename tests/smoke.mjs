@@ -37,9 +37,30 @@ assert(['QC_FAILED', 'READY_FOR_AUDIT', 'READY_FOR_QC'].includes(mid.status), `u
 run(['run']);
 assert(state().status === 'DONE', 'qc recovery should end at DONE after force flag is removed');
 
+console.log('smoke: manual/OpenClaw handoff guard');
+run(['new-task', 'Smoke manual completion guard']);
+let manualGuardFailed = false;
+try {
+  run(['complete-role', 'planner', 'pass']);
+} catch (error) {
+  const output = `${error.stdout ?? ''}${error.stderr ?? ''}`;
+  manualGuardFailed = output.includes('Role artifact validation failed.');
+}
+assert(manualGuardFailed, 'planner pass should fail when plan artifact is still placeholder');
+run(['run-planner']);
+run(['complete-role', 'planner', 'pass']);
+assert(state().status === 'READY_FOR_IMPLEMENT', 'planner pass should succeed after valid plan artifact exists');
+
 console.log('smoke: adapter output');
 const adapter = JSON.parse(run(['openclaw-adapter']));
 assert(adapter.project === 'crewctl', 'adapter project should be crewctl');
 assert(adapter.roleCommandMap.planner, 'adapter should include planner command');
+assert(adapter.stopConditions.includes('DONE'), 'adapter should expose stop conditions');
+assert(adapter.sourceOfTruth.primaryDoc === 'docs/SOURCE_OF_TRUTH.md', 'adapter should expose source of truth');
+
+console.log('smoke: source of truth output');
+const sourceOfTruth = JSON.parse(run(['source-of-truth']));
+assert(sourceOfTruth.primaryDoc === 'docs/SOURCE_OF_TRUTH.md', 'source of truth command should point at primary doc');
+assert(sourceOfTruth.references.includes('ROADMAP.md'), 'source of truth command should include roadmap reference');
 
 console.log('smoke: ok');

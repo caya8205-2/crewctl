@@ -1,0 +1,14 @@
+{
+  "generatedAt": null,
+  "requiredFiles": {
+    "ok": false,
+    "missing": [],
+    "checkedFiles": 17
+  },
+  "configuredChecks": [],
+  "summary": {
+    "requiredFilesOk": false,
+    "configuredChecksOk": false,
+    "failingConfiguredChecks": []
+  }
+}

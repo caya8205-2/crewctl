@@ -14,6 +14,7 @@ Crewctl does **not** include built-in provider clients yet. There is no OpenAI/A
 - role prompts
 - completion transitions
 - lock guard
+- source-of-truth references
 
 ### OpenClaw
 - run the main orchestrator
@@ -30,9 +31,10 @@ Crewctl does **not** include built-in provider clients yet. There is no OpenAI/A
    npm run agent:status
    ```
 
-2. Get current adapter state:
+2. Get current adapter state and durable source-of-truth reference:
    ```bash
    npm run agent:openclaw-adapter
+   npm run agent:source-of-truth
    ```
 
 3. Generate current role prompt:
@@ -48,6 +50,8 @@ Crewctl does **not** include built-in provider clients yet. There is no OpenAI/A
    ```bash
    npm run agent:complete-role -- <role> pass
    ```
+
+   Crewctl will validate the role artifact before accepting a `pass` completion.
 
    Or fail it:
    ```bash
@@ -87,6 +91,7 @@ Pseudo-flow for OpenClaw main agent:
 ```txt
 while state not DONE/BLOCKED:
   run: npm run agent:openclaw-adapter
+  run: npm run agent:source-of-truth
   run: npm run agent:role-prompt
   spawn role subagent with generated prompt
   wait for subagent completion
@@ -95,6 +100,8 @@ while state not DONE/BLOCKED:
     run: npm run agent:complete-role -- <role> pass
   else:
     run: npm run agent:complete-role -- <role> fail
+
+`agent:complete-role -- <role> pass` should be treated as a guarded transition, not a blind state advance.
 ```
 
 ## Why no provider endpoint yet?

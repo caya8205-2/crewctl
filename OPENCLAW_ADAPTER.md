@@ -39,9 +39,12 @@ Every worker should update its matching artifact:
 
 ```bash
 npm run agent:openclaw-adapter
+npm run agent:source-of-truth
 ```
 
-This emits a JSON object with current state, next role, role command map, artifact list, and suggested prompt.
+`agent:openclaw-adapter` emits a JSON object with current state, next role, required artifact, helper commands, stop conditions, source-of-truth references, role command map, artifact list, and suggested prompt.
+
+`agent:source-of-truth` emits the durable planning/reference anchor so an external orchestrator can recover after context loss.
 
 ## Future OpenClaw-native flow
 
@@ -51,7 +54,8 @@ This emits a JSON object with current state, next role, role command map, artifa
 4. OpenClaw spawns the right subagent for the current role.
 5. Subagent updates artifact.
 6. OpenClaw runs validation / transition.
-7. Repeat until `DONE` or `BLOCKED`.
+7. OpenClaw can re-read `npm run agent:source-of-truth` if a long session loses conversational context.
+8. Repeat until `DONE` or `BLOCKED`.
 
 ## Safety notes
 
