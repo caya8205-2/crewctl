@@ -1,0 +1,17 @@
+{
+  "workflow": {
+    "maxIterations": 5
+  },
+  "quality": {
+    "minScore": 85
+  },
+  "checks": {
+    "build": "",
+    "lint": "",
+    "test": "",
+    "typecheck": ""
+  },
+  "runtime": {
+    "preferredAdapter": "openclaw"
+  }
+}

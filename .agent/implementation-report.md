@@ -10,7 +10,7 @@ Deterministic implementer processed objective: Smoke forced qc failure
 
 ## Decisions
 - Preserve current scaffold contract.
-- Treat validation output as implementation evidence.
+- Treat validation output and configured checks as implementation evidence.
 - Retry context from previous failures is captured below.
 
 ## Previous Failure Context
@@ -19,10 +19,16 @@ Deterministic implementer processed objective: Smoke forced qc failure
 ## Checks Run
 - command: npm run check
   result: pass
-  notes: Validated 13 required files.
+  notes: Validated 14 required files.
+
+## Configured Command Checks
+- build: not-configured
+- lint: not-configured
+- test: not-configured
+- typecheck: not-configured
 
 ## Known Issues
-- None from scaffold validation.
+- None from scaffold/configured validation.
 
 ## Next Recommended State
 READY_FOR_AUDIT

@@ -4,7 +4,7 @@
 PASS
 
 ## Summary
-Deterministic auditor checked plan, implementation report, and scaffold validation evidence.
+Deterministic auditor checked plan, implementation report, and scaffold/configured validation evidence.
 
 ## Issues
 - None.
@@ -14,6 +14,7 @@ Deterministic auditor checked plan, implementation report, and scaffold validati
 - [x] Plan recommends READY_FOR_IMPLEMENT
 - [x] Implementation report exists
 - [x] Implementation checks passed
+- [x] Configured command checks section exists
 - [x] Required scaffold files exist
 - [x] No forced audit failure
 

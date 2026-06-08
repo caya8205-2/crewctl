@@ -8,7 +8,7 @@
   "lastCompletedRole": "qc",
   "nextRole": null,
   "activeTask": {
-    "id": "task-012",
+    "id": "task-017",
     "title": "Smoke forced qc failure",
     "priority": "normal"
   },
@@ -30,6 +30,6 @@
     "infra/prod/**"
   ],
   "blockers": [],
-  "updatedAt": "2026-06-08T19:55:05.952Z",
-  "taskCounter": 12
+  "updatedAt": "2026-06-08T20:25:44.417Z",
+  "taskCounter": 17
 }

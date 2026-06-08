@@ -67,6 +67,7 @@ examples/
   demo-failure-path.md
 tests/
   smoke.mjs
+crewctl.config.json
 README.md
 ROADMAP.md
 PROMPT_DIAGRAM.md
@@ -96,6 +97,7 @@ npm run agent:run
 npm run agent:role-prompt
 npm run agent:complete-role -- planner pass
 npm run agent:openclaw-adapter
+npm run agent:checks
 npm run check
 npm run test:smoke
 ```
@@ -109,6 +111,7 @@ npm run test:smoke
 - role contracts live in `templates/`
 - actual AI workers can be plugged in later without changing the core artifact contract
 - real worker handoff is documented in `REAL_WORKERS.md`
+- workflow/runtime/check defaults live in `crewctl.config.json`
 
 ## Workflow shape
 

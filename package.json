@@ -22,6 +22,7 @@
     "agent:role-prompt": "node src/runner.mjs role-prompt",
     "agent:complete-role": "node src/runner.mjs complete-role",
     "agent:openclaw-adapter": "node src/runner.mjs openclaw-adapter",
+    "agent:checks": "node src/runner.mjs checks",
     "check": "node src/runner.mjs validate",
     "test:smoke": "node tests/smoke.mjs"
   }
