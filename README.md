@@ -4,6 +4,29 @@
 
 State-machine based coding-agent orchestration scaffold.
 
+## Quick Start
+
+```bash
+npm install -g crewctl
+crewctl init
+crewctl doctor
+crewctl-mcp
+```
+
+For MCP-capable clients, configure the server command:
+
+```json
+{
+  "mcpServers": {
+    "crewctl": {
+      "command": "crewctl-mcp"
+    }
+  }
+}
+```
+
+Use MCP tools when available, and fall back to the `crewctl` CLI when a runtime only supports shell commands.
+
 ## What this is
 
 `crewctl` is a lightweight workflow engine for coding agents.
@@ -118,21 +141,27 @@ npm run skill:install-codex
 npm run skill:probe
 npm run check
 npm run test:smoke
+npm run test:mcp
 ```
 
 ## Install
 
 ```bash
 npm install -g crewctl
+crewctl init
+crewctl doctor
 crewctl install-skill codex
 ```
 
 After package install:
 
 ```bash
+crewctl init
+crewctl doctor
 crewctl status
 crewctl runtime-adapter
 crewctl install-skill codex
+crewctl-mcp
 ```
 
 ## Core concept
@@ -149,6 +178,44 @@ crewctl install-skill codex
 - durable planning references live in `docs/SOURCE_OF_TRUTH.md`
 - `agent:complete-role` validates role artifacts before accepting a `pass` result
 - `agent:source-of-truth` exposes the current planning/reference anchor for external orchestrators
+
+## Project Bootstrap
+
+Initialize crewctl in another repository:
+
+```bash
+crewctl init --target /path/to/project --objective "Initial crewctl task"
+```
+
+Inspect whether a repository is crewctl-ready:
+
+```bash
+crewctl doctor --target /path/to/project
+```
+
+`init` creates `.agent/`, `crewctl.config.json`, `templates/`, and `prompts/`. It skips existing files unless `--force` is provided.
+
+## MCP Server
+
+Run the MCP server with:
+
+```bash
+crewctl-mcp
+```
+
+The server exposes crewctl as MCP tools so an orchestrator can avoid shell-command orchestration:
+
+- `crewctl_doctor`
+- `crewctl_init`
+- `crewctl_status`
+- `crewctl_runtime_adapter`
+- `crewctl_role_prompt`
+- `crewctl_complete_role`
+- `crewctl_continue`
+- `crewctl_checks`
+- `crewctl_source_of_truth`
+
+Use MCP tools when the runtime supports them. Use the CLI as the fallback command interface.
 
 ## Codex skill
 

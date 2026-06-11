@@ -50,6 +50,17 @@ npm run agent:runtime-adapter -- generic-cli
 npm run agent:runtime-adapter -- openclaw
 ```
 
+## Project bootstrap
+
+When a target repository does not have crewctl files yet, initialize it first:
+
+```bash
+crewctl init --target /path/to/project --objective "Initial crewctl task"
+crewctl doctor --target /path/to/project
+```
+
+`doctor` reports missing files, current state, configured adapter/checks, whether the Codex skill is installed, and recommended next commands.
+
 ## OpenClaw compatibility
 
 OpenClaw remains the first-class adapter. This command is kept as a compatibility alias:
@@ -96,6 +107,8 @@ The skill includes `scripts/probe.py`, a small helper that inspects a crewctl-en
 The skill should instruct Codex to:
 
 - read `docs/RUNTIME_ADAPTERS.md`
+- run `crewctl doctor`
+- run `crewctl init` only when the user wants to scaffold crewctl into the target repo
 - inspect `.agent/workstate.json`
 - call `agent:runtime-adapter`
 - use `agent:role-prompt`
@@ -110,16 +123,31 @@ The plugin should still call into the same crewctl CLI or a thin local API. It s
 
 ### MCP server
 
-An MCP server is the best cross-platform adapter once the contract stabilizes. It can expose crewctl operations as tools:
+`crewctl-mcp` exposes crewctl operations as structured tools:
 
-- `get_state`
-- `get_runtime_adapter`
-- `get_role_prompt`
-- `complete_role`
-- `run_checks`
-- `list_artifacts`
+- `crewctl_doctor`
+- `crewctl_init`
+- `crewctl_status`
+- `crewctl_runtime_adapter`
+- `crewctl_role_prompt`
+- `crewctl_complete_role`
+- `crewctl_continue`
+- `crewctl_checks`
+- `crewctl_source_of_truth`
 
-The MCP layer should be a wrapper around crewctl's core contract, not a replacement for it.
+Prefer MCP tools when a runtime supports MCP. Use CLI commands as the fallback interface.
+
+Generic MCP client config:
+
+```json
+{
+  "mcpServers": {
+    "crewctl": {
+      "command": "crewctl-mcp"
+    }
+  }
+}
+```
 
 ## Design rule
 

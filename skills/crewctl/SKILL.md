@@ -7,6 +7,8 @@ description: Operate crewctl, a local coding-agent workflow control plane. Use w
 
 Use crewctl as the source of truth for workflow state. Codex may perform the current role's work, but crewctl owns transitions, artifact validation, retries, locks, and evidence checks.
 
+Prefer MCP tools such as `crewctl_doctor`, `crewctl_runtime_adapter`, `crewctl_role_prompt`, and `crewctl_complete_role` when they are available. Fall back to CLI commands when MCP tools are not available.
+
 ## Quick Start
 
 1. Confirm the repo is crewctl-enabled. Prefer the bundled probe when available:
@@ -16,8 +18,14 @@ Use crewctl as the source of truth for workflow state. Codex may perform the cur
 
    Or run the native crewctl commands:
    ```bash
+   crewctl doctor
    npm run agent:status
    npm run agent:runtime-adapter
+   ```
+
+   If the repo is not crewctl-enabled and the user asked to set it up, run:
+   ```bash
+   crewctl init
    ```
 
 2. Read the adapter JSON and note:
@@ -87,7 +95,25 @@ Assess final quality against the configured threshold. Use structured evidence f
 
 ## Common Commands
 
+MCP tools, when available:
+
+- `crewctl_doctor`
+- `crewctl_init`
+- `crewctl_status`
+- `crewctl_runtime_adapter`
+- `crewctl_role_prompt`
+- `crewctl_complete_role`
+- `crewctl_continue`
+- `crewctl_checks`
+- `crewctl_source_of_truth`
+
+CLI fallback:
+
 ```bash
+crewctl init
+crewctl doctor
+crewctl status
+crewctl runtime-adapter
 npm run agent:status
 npm run agent:runtime-adapter
 npm run agent:role-prompt

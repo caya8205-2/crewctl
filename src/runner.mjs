@@ -13,11 +13,8 @@ const REQUIRED_FILES = [
   '.agent/workstate.json', '.agent/context.md', '.agent/plan.md',
   '.agent/implementation-report.md', '.agent/audit.md', '.agent/qc.json',
   '.agent/check-results.json', '.agent/history.md', 'templates/planner.md', 'templates/implementer.md',
-  'templates/auditor.md', 'templates/qc.md', 'README.md', 'package.json', 'crewctl.config.json',
-  'docs/SOURCE_OF_TRUTH.md', 'docs/RUNTIME_ADAPTERS.md', 'docs/PUBLISHING_CHECKLIST.md',
-  'skills/crewctl/SKILL.md', 'skills/crewctl/agents/openai.yaml', 'skills/crewctl/scripts/probe.py',
-  'scripts/install-codex-skill.mjs', 'bin/crewctl.mjs', '.github/workflows/ci.yml',
-  '.github/workflows/npm-publish.yml', '.github/pull_request_template.md'
+  'templates/auditor.md', 'templates/qc.md', 'prompts/planner.md', 'prompts/implementer.md',
+  'prompts/auditor.md', 'prompts/qc.md', 'prompts/openclaw-orchestrator.md', 'crewctl.config.json'
 ];
 
 const DEFAULT_CONFIG = {
@@ -352,6 +349,7 @@ function resolveRoleFromState(state) {
 function cmdRolePrompt() {
   ensureState();
   const state = loadState();
+  const config = loadConfig();
   const role = process.argv[3] ?? resolveRoleFromState(state);
   if (!role) return fail('Could not resolve role for prompt generation.');
   const promptPath = path.join(root, 'prompts', `${role}.md`);
@@ -363,11 +361,11 @@ function cmdRolePrompt() {
     objective: state.objective,
     activeTask: state.activeTask,
     nextRole: state.nextRole,
-    filesToRead: ['.agent/workstate.json', '.agent/context.md', '.agent/plan.md', '.agent/implementation-report.md', '.agent/audit.md', '.agent/qc.json', '.agent/check-results.json', `templates/${role}.md`, `prompts/${role}.md`, 'crewctl.config.json', 'docs/SOURCE_OF_TRUTH.md'],
+    filesToRead: [...new Set(['.agent/workstate.json', '.agent/context.md', '.agent/plan.md', '.agent/implementation-report.md', '.agent/audit.md', '.agent/qc.json', '.agent/check-results.json', `templates/${role}.md`, `prompts/${role}.md`, 'crewctl.config.json', config.sourceOfTruth?.primaryDoc, ...(config.sourceOfTruth?.references ?? [])].filter(Boolean))],
     requiredArtifact: role === 'planner' ? '.agent/plan.md' : role === 'implementer' ? '.agent/implementation-report.md' : role === 'auditor' ? '.agent/audit.md' : '.agent/qc.json',
     allowedGlobs: state.allowedGlobs,
     forbiddenGlobs: state.forbiddenGlobs,
-    config: loadConfig(),
+    config,
     prompt: rolePrompt
   };
   console.log(JSON.stringify(payload, null, 2));

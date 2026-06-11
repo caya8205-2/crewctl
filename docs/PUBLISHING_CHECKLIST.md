@@ -14,6 +14,7 @@ Use this checklist before pushing `crewctl` updates for review/demo.
 
 - [ ] `npm run check` passes
 - [ ] `npm run test:smoke` passes
+- [ ] `npm run test:mcp` passes
 - [ ] `npm run agent:runtime-adapter` returns valid JSON
 - [ ] `npm run agent:openclaw-adapter` returns valid JSON
 - [ ] `npm run agent:source-of-truth` returns valid JSON
@@ -22,6 +23,8 @@ Use this checklist before pushing `crewctl` updates for review/demo.
 - [ ] `skills/crewctl/SKILL.md` validates as a Codex skill
 - [ ] `npm run skill:probe` returns current crewctl state/adapter summary
 - [ ] `crewctl install-skill codex` works from an installed or linked package
+- [ ] `crewctl init --target <tmp>` creates a complete scaffold
+- [ ] `crewctl doctor --target <tmp>` reports the scaffold as enabled
 
 ## Evidence quality
 
@@ -52,7 +55,7 @@ Use this checklist before pushing `crewctl` updates for review/demo.
 
 ## GitHub
 
-- [ ] CI workflow runs `npm run check`, `npm run test:smoke`, and `npm pack --dry-run`
+- [ ] CI workflow runs `npm run check`, `npm run test:smoke`, `npm run test:mcp`, and `npm pack --dry-run`
 - [ ] npm publish workflow exists and is manual
 - [ ] repository secret `NPM_TOKEN` is configured before publishing from GitHub Actions
 - [ ] PR template reflects the required validation commands

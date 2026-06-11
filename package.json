@@ -1,6 +1,6 @@
 {
   "name": "crewctl",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Deterministic workflow control plane for coding agents.",
   "type": "module",
   "license": "MIT",
@@ -23,7 +23,8 @@
     "cli"
   ],
   "bin": {
-    "crewctl": "bin/crewctl.mjs"
+    "crewctl": "bin/crewctl.mjs",
+    "crewctl-mcp": "bin/crewctl-mcp.mjs"
   },
   "files": [
     "bin/",
@@ -71,6 +72,11 @@
     "skill:probe": "python skills/crewctl/scripts/probe.py",
     "check": "node src/runner.mjs validate",
     "test:smoke": "node tests/smoke.mjs",
+    "test:mcp": "node tests/mcp-smoke.mjs",
     "prepack": "npm run check"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^3.25.76"
   }
 }

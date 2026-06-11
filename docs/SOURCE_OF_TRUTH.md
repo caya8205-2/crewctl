@@ -73,6 +73,7 @@ Core commands:
 - `npm run agent:checks`
 - `npm run check`
 - `npm run test:smoke`
+- `npm run test:mcp`
 
 ### Codex skill
 
@@ -82,9 +83,17 @@ The repo includes a project-local Codex skill package at `skills/crewctl/`. It t
 
 `crewctl` is prepared as an npm CLI package. The package exposes `bin/crewctl.mjs` as the `crewctl` command, includes a controlled `files` whitelist, and uses `crewctl install-skill codex` for Codex skill installation.
 
+### Target project bootstrap
+
+The CLI exposes `crewctl init` to scaffold `.agent/`, `crewctl.config.json`, `templates/`, and `prompts/` into a target repository. `crewctl doctor` checks whether a target repository is crewctl-enabled and reports missing files, state, config, Codex skill install status, and recommended next commands.
+
 ### GitHub automation
 
 The repo includes GitHub Actions for CI and manual npm publishing. CI runs required-file validation, smoke coverage, and `npm pack --dry-run`. The publish workflow requires repository secret `NPM_TOKEN` and publishes with npm provenance.
+
+### MCP server
+
+`crewctl-mcp` exposes the command API as MCP tools. Runtime orchestrators should prefer MCP tools when available and fall back to CLI commands when MCP is unavailable.
 
 ### Safety/quality mechanisms
 
@@ -99,7 +108,7 @@ The repo includes GitHub Actions for CI and manual npm publishing. CI runs requi
 1. Configured checks are present but mostly empty in `crewctl.config.json`.
 2. OpenClaw orchestration is documented but not implemented as a real wrapper.
 3. Codex skill integration exists as a project-local package, but it is not installed globally until `npm run skill:install-codex` is run.
-4. Adapter output is runtime-neutral, but there is no dedicated MCP server or plugin tool surface yet.
+4. Plugin-specific UI/tool surfaces are not implemented yet; the MCP server is the current structured tool surface.
 
 ## Reference Projects and Patterns
 
@@ -212,11 +221,11 @@ The immediate PoC should prove:
 
 ## Next Implementation Priorities
 
-1. Configure `crewctl.config.json` to run at least one non-recursive real check beyond required-file validation.
+1. Try `crewctl init` and `crewctl doctor` on a real external repo, then tighten the workflow from usage.
 2. Configure GitHub repository secret `NPM_TOKEN` before using the publish workflow.
 3. Publish `crewctl` to npm after reviewing `npm pack --dry-run` contents.
 4. Install and try the Codex skill on a real external repo, then tighten the workflow from usage.
-5. Design the thin MCP server surface after the runtime adapter payload stabilizes.
+5. Try `crewctl-mcp` from a real orchestrator and tighten tool descriptions/input schemas from usage.
 6. Implement the OpenClaw orchestration wrapper around the same runtime adapter contract.
 
 ## Update Rule

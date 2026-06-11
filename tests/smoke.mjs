@@ -12,6 +12,13 @@ function run(args, env = {}) {
   });
 }
 
+function runCli(args, cwd = root) {
+  return execFileSync('node', [path.join(root, 'bin/crewctl.mjs'), ...args], {
+    cwd,
+    encoding: 'utf8'
+  });
+}
+
 function state() {
   return JSON.parse(fs.readFileSync(path.join(root, '.agent/workstate.json'), 'utf8'));
 }
@@ -69,5 +76,21 @@ console.log('smoke: source of truth output');
 const sourceOfTruth = JSON.parse(run(['source-of-truth']));
 assert(sourceOfTruth.primaryDoc === 'docs/SOURCE_OF_TRUTH.md', 'source of truth command should point at primary doc');
 assert(sourceOfTruth.references.includes('ROADMAP.md'), 'source of truth command should include roadmap reference');
+
+console.log('smoke: CLI init and doctor');
+const tmpRoot = path.join(root, '.tmp-smoke');
+fs.rmSync(tmpRoot, { recursive: true, force: true });
+fs.mkdirSync(tmpRoot, { recursive: true });
+try {
+  const init = JSON.parse(runCli(['init', '--target', tmpRoot, '--objective', 'Smoke external repo']));
+  assert(init.ok === true, 'cli init should succeed');
+  assert(fs.existsSync(path.join(tmpRoot, '.agent/workstate.json')), 'cli init should create workstate');
+  assert(fs.existsSync(path.join(tmpRoot, 'templates/planner.md')), 'cli init should copy templates');
+  const doctor = JSON.parse(runCli(['doctor', '--target', tmpRoot]));
+  assert(doctor.ok === true, 'doctor should report scaffold as enabled');
+  assert(doctor.state.status === 'INIT', 'doctor should report INIT status');
+} finally {
+  fs.rmSync(tmpRoot, { recursive: true, force: true });
+}
 
 console.log('smoke: ok');

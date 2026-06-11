@@ -132,6 +132,7 @@ Status: not started
 - release/versioning strategy
 - npm package metadata and CLI bin
 - GitHub CI and manual npm publish workflow
+- MCP server bin and structured tool surface
 
 ### Exit Criteria
 - New user can clone repo, run scaffold, and understand the workflow quickly
@@ -158,5 +159,5 @@ These priorities were reconstructed from the implementation state and external/i
 - diff-aware retries
 - persistent run storage beyond `.agent/`
 - Codex skill and plugin wrappers
-- MCP server wrapper
+- broader MCP resources/prompts beyond the initial tool surface
 
