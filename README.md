@@ -175,30 +175,6 @@ When installed as a package or linked globally, the same operation is available 
 crewctl install-skill codex
 ```
 
-## Publishing
-
-Pre-publish checks:
-
-```bash
-npm run check
-npm run test:smoke
-npm pack --dry-run
-```
-
-Publish when the package contents look correct:
-
-```bash
-npm publish
-```
-
-GitHub Actions also includes a manual publish workflow:
-
-1. Add an npm automation token as repository secret `NPM_TOKEN`.
-2. Open **Actions -> Publish npm package**.
-3. Run the workflow with the desired dist-tag.
-
-The workflow runs `check`, `test:smoke`, `npm pack --dry-run`, then publishes with npm provenance.
-
 ## Workflow shape
 
 ```txt
