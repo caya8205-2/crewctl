@@ -91,14 +91,6 @@ package.json
 
 ## Commands
 
-After package install:
-
-```bash
-crewctl status
-crewctl runtime-adapter
-crewctl install-skill codex
-```
-
 From this repository:
 
 ```bash
@@ -132,6 +124,14 @@ npm run test:smoke
 
 ```bash
 npm install -g crewctl
+crewctl install-skill codex
+```
+
+After package install:
+
+```bash
+crewctl status
+crewctl runtime-adapter
 crewctl install-skill codex
 ```
 
