@@ -1,5 +1,7 @@
 ﻿# Crewctl
 
+[![CI](https://github.com/caya8205-2/crewctl/actions/workflows/ci.yml/badge.svg)](https://github.com/caya8205-2/crewctl/actions/workflows/ci.yml)
+
 State-machine based coding-agent orchestration scaffold.
 
 ## What this is
@@ -11,7 +13,7 @@ Current focus:
 - machine-readable state
 - human-readable handoff artifacts
 - role-based pipeline: planner -> implementer -> auditor -> qc
-- portable core with OpenClaw as the intended first runtime adapter
+- portable core with runtime adapters; OpenClaw is the first intended adapter
 
 Important: crewctl does **not** include built-in provider clients yet. There is no OpenAI/Anthropic/OpenRouter endpoint integration in the core code. Provider/model execution is currently expected to come from OpenClaw or another external runtime.
 
@@ -21,7 +23,7 @@ Important: crewctl does **not** include built-in provider clients yet. There is 
 
 ## Current status
 
-Current phase: deterministic local pipeline with early OpenClaw handoff support.
+Current phase: deterministic local pipeline with runtime adapter metadata and early OpenClaw handoff support.
 
 Already implemented:
 - repo scaffold
@@ -35,7 +37,8 @@ Already implemented:
 - retry / block handling
 - guarded `agent:complete-role` artifact validation
 - structured check evidence in `.agent/check-results.json`
-- OpenClaw adapter/status prompt commands
+- runtime adapter/status prompt commands with OpenClaw compatibility
+- Codex skill draft under `skills/crewctl/`
 - smoke coverage for happy path, QC recovery, and manual handoff guard
 - durable planning docs under `docs/`
 
@@ -70,6 +73,10 @@ prompts/
 examples/
   demo-happy-path.md
   demo-failure-path.md
+skills/
+  crewctl/
+    SKILL.md
+    agents/openai.yaml
 tests/
   smoke.mjs
 crewctl.config.json
@@ -83,6 +90,16 @@ package.json
 ```
 
 ## Commands
+
+After package install:
+
+```bash
+crewctl status
+crewctl runtime-adapter
+crewctl install-skill codex
+```
+
+From this repository:
 
 ```bash
 npm run agent:init
@@ -101,11 +118,21 @@ npm run agent:continue
 npm run agent:run
 npm run agent:role-prompt
 npm run agent:complete-role -- planner pass
+npm run agent:runtime-adapter
 npm run agent:openclaw-adapter
 npm run agent:source-of-truth
 npm run agent:checks
+npm run skill:install-codex
+npm run skill:probe
 npm run check
 npm run test:smoke
+```
+
+## Install
+
+```bash
+npm install -g crewctl
+crewctl install-skill codex
 ```
 
 ## Core concept
@@ -117,10 +144,60 @@ npm run test:smoke
 - role contracts live in `templates/`
 - actual AI workers can be plugged in later without changing the core artifact contract
 - real worker handoff is documented in `REAL_WORKERS.md`
+- runtime adapter integration is documented in `docs/RUNTIME_ADAPTERS.md`
 - workflow/runtime/check defaults live in `crewctl.config.json`
 - durable planning references live in `docs/SOURCE_OF_TRUTH.md`
 - `agent:complete-role` validates role artifacts before accepting a `pass` result
 - `agent:source-of-truth` exposes the current planning/reference anchor for external orchestrators
+
+## Codex skill
+
+This repo includes a project-local Codex skill package:
+
+```txt
+skills/crewctl/
+  SKILL.md
+  agents/openai.yaml
+  scripts/probe.py
+```
+
+Install it into the local Codex skills directory when you want another Codex thread/project to discover it:
+
+```bash
+npm run skill:install-codex
+```
+
+The installer copies `skills/crewctl` to `$CODEX_HOME/skills/crewctl`, or `~/.codex/skills/crewctl` when `CODEX_HOME` is unset.
+
+When installed as a package or linked globally, the same operation is available without a project-local `package.json`:
+
+```bash
+crewctl install-skill codex
+```
+
+## Publishing
+
+Pre-publish checks:
+
+```bash
+npm run check
+npm run test:smoke
+npm pack --dry-run
+```
+
+Publish when the package contents look correct:
+
+```bash
+npm publish
+```
+
+GitHub Actions also includes a manual publish workflow:
+
+1. Add an npm automation token as repository secret `NPM_TOKEN`.
+2. Open **Actions -> Publish npm package**.
+3. Run the workflow with the desired dist-tag.
+
+The workflow runs `check`, `test:smoke`, `npm pack --dry-run`, then publishes with npm provenance.
 
 ## Workflow shape
 
@@ -143,7 +220,19 @@ Failure paths later:
 
 ## OpenClaw-first integration
 
-Crewctl's intended first real-worker path is OpenClaw:
+Crewctl exposes a runtime-neutral adapter contract through:
+
+```bash
+npm run agent:runtime-adapter
+```
+
+OpenClaw is the first intended real-worker runtime and keeps a compatibility alias:
+
+```bash
+npm run agent:openclaw-adapter
+```
+
+The intended OpenClaw flow is:
 
 ```txt
 OpenClaw orchestrator
@@ -156,6 +245,8 @@ OpenClaw orchestrator
 ```
 
 See:
+- `docs/RUNTIME_ADAPTERS.md`
+- `skills/crewctl/SKILL.md`
 - `OPENCLAW_WORKFLOW.md`
 - `OPENCLAW_ADAPTER.md`
 - `prompts/openclaw-orchestrator.md`
@@ -170,8 +261,9 @@ This project can go in two compatible directions:
    - portable orchestration engine
    - usable outside OpenClaw
 
-2. **OpenClaw-integrated runtime**
-   - OpenClaw acts as orchestrator/adapter
+2. **Runtime-integrated tool**
+   - OpenClaw acts as the first orchestrator/adapter
+   - Codex can integrate through a skill, plugin, or MCP wrapper
    - role workers can run as subagents
    - same artifact/state contract stays intact
 

@@ -1,6 +1,6 @@
 # Crewctl Source of Truth
 
-_Last updated: 2026-06-09 04:55 WIB by Petrik_
+_Last updated: 2026-06-11 by Codex_
 
 This document is the durable source of truth for the `crewctl` PoC. It exists so planning survives lost chat context, interrupted OpenClaw goals, and long implementation sessions.
 
@@ -17,8 +17,9 @@ It owns:
 - evidence capture
 - quality gates
 - runtime adapter metadata
+- Codex skill draft for operating crewctl
 
-It does **not** own provider/model execution yet. OpenClaw or another runtime supplies workers and tools.
+It does **not** own provider/model execution yet. OpenClaw or another runtime supplies workers and tools through the runtime adapter contract.
 
 ## Current PoC Thesis
 
@@ -66,10 +67,24 @@ Core commands:
 - `npm run agent:status`
 - `npm run agent:role-prompt`
 - `npm run agent:complete-role -- <role> pass|fail`
+- `npm run agent:runtime-adapter`
 - `npm run agent:openclaw-adapter`
+- `npm run agent:source-of-truth`
 - `npm run agent:checks`
 - `npm run check`
 - `npm run test:smoke`
+
+### Codex skill
+
+The repo includes a project-local Codex skill package at `skills/crewctl/`. It teaches Codex to operate crewctl through `agent:runtime-adapter`, `agent:role-prompt`, and guarded `agent:complete-role` transitions. The skill includes `scripts/probe.py` for deterministic state/adapter inspection. The CLI exposes `crewctl install-skill codex` so the skill can be installed without relying on a target project's `package.json`.
+
+### npm package
+
+`crewctl` is prepared as an npm CLI package. The package exposes `bin/crewctl.mjs` as the `crewctl` command, includes a controlled `files` whitelist, and uses `crewctl install-skill codex` for Codex skill installation.
+
+### GitHub automation
+
+The repo includes GitHub Actions for CI and manual npm publishing. CI runs required-file validation, smoke coverage, and `npm pack --dry-run`. The publish workflow requires repository secret `NPM_TOKEN` and publishes with npm provenance.
 
 ### Safety/quality mechanisms
 
@@ -81,12 +96,10 @@ Core commands:
 
 ## Current Gaps
 
-1. `ROADMAP.md` lags behind the implementation.
-2. Configured checks are present but empty in `crewctl.config.json`.
-3. OpenClaw orchestration is documented but not implemented as a real wrapper.
-4. Adapter output is useful but still shallow; it should expose required artifact, next commands, validation command, and stop conditions.
-5. No durable planning/reference document existed before this file.
-6. No publish-readiness checklist yet.
+1. Configured checks are present but mostly empty in `crewctl.config.json`.
+2. OpenClaw orchestration is documented but not implemented as a real wrapper.
+3. Codex skill integration exists as a project-local package, but it is not installed globally until `npm run skill:install-codex` is run.
+4. Adapter output is runtime-neutral, but there is no dedicated MCP server or plugin tool surface yet.
 
 ## Reference Projects and Patterns
 
@@ -166,9 +179,9 @@ Relevant ideas:
 
 ## Design Decisions
 
-### Decision 1: Crewctl owns state; OpenClaw owns execution
+### Decision 1: Crewctl owns state; runtimes own execution
 
-OpenClaw can spawn subagents and provide tools, but crewctl remains the source of truth for status and transitions.
+OpenClaw, Codex, MCP clients, or another runtime can provide workers and tools, but crewctl remains the source of truth for status and transitions.
 
 ### Decision 2: Artifacts are required, not decorative
 
@@ -180,26 +193,31 @@ Human-readable reports are useful, but QC should depend on `.agent/check-results
 
 ### Decision 4: The PoC should prioritize orchestration integrity over model integration
 
-Provider clients are intentionally out of scope for the current PoC. OpenClaw already supplies model/tool execution.
+Provider clients are intentionally out of scope for the current PoC. Runtime adapters supply model/tool execution.
+
+### Decision 5: OpenClaw is the first adapter, not the only adapter
+
+`agent:runtime-adapter` is the runtime-neutral contract. `agent:openclaw-adapter` remains as a compatibility alias for OpenClaw-native flows.
 
 ## Rapid PoC Scope
 
 The immediate PoC should prove:
 
 1. A task can move through a deterministic role pipeline.
-2. Real/OpenClaw workers can be handed a role prompt and required artifact.
+2. Real runtime workers can be handed a role prompt and required artifact.
 3. `complete-role pass` cannot blindly advance without artifact evidence.
 4. QC can fail/retry/block using structured evidence.
-5. Adapter output is rich enough for an OpenClaw orchestrator to drive the loop.
+5. Adapter output is rich enough for OpenClaw or another runtime orchestrator to drive the loop.
 6. Roadmap and source-of-truth docs stay updated as implementation changes.
 
 ## Next Implementation Priorities
 
-1. Improve `agent:openclaw-adapter` output with richer orchestration metadata.
-2. Add `agent:source-of-truth` command to print this document path and current source refs.
-3. Add publish/PoC readiness docs and update `ROADMAP.md` statuses.
-4. Configure `crewctl.config.json` to run at least `npm run check` and `npm run test:smoke` via the existing check mechanism without recursion hazards.
-5. Add tests for richer adapter output and source-of-truth command.
+1. Configure `crewctl.config.json` to run at least one non-recursive real check beyond required-file validation.
+2. Configure GitHub repository secret `NPM_TOKEN` before using the publish workflow.
+3. Publish `crewctl` to npm after reviewing `npm pack --dry-run` contents.
+4. Install and try the Codex skill on a real external repo, then tighten the workflow from usage.
+5. Design the thin MCP server surface after the runtime adapter payload stabilizes.
+6. Implement the OpenClaw orchestration wrapper around the same runtime adapter contract.
 
 ## Update Rule
 

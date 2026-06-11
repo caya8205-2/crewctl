@@ -51,9 +51,16 @@ run(['run-planner']);
 run(['complete-role', 'planner', 'pass']);
 assert(state().status === 'READY_FOR_IMPLEMENT', 'planner pass should succeed after valid plan artifact exists');
 
-console.log('smoke: adapter output');
+console.log('smoke: runtime adapter output');
+const runtimeAdapter = JSON.parse(run(['runtime-adapter']));
+assert(runtimeAdapter.project === 'crewctl', 'runtime adapter project should be crewctl');
+assert(runtimeAdapter.adapter === 'openclaw', 'runtime adapter should default to preferred adapter');
+assert(runtimeAdapter.adapterContract.controlPlane.includes('crewctl CLI'), 'runtime adapter should expose control plane contract');
+
+console.log('smoke: OpenClaw adapter compatibility output');
 const adapter = JSON.parse(run(['openclaw-adapter']));
 assert(adapter.project === 'crewctl', 'adapter project should be crewctl');
+assert(adapter.adapter === 'openclaw', 'OpenClaw adapter alias should select openclaw');
 assert(adapter.roleCommandMap.planner, 'adapter should include planner command');
 assert(adapter.stopConditions.includes('DONE'), 'adapter should expose stop conditions');
 assert(adapter.sourceOfTruth.primaryDoc === 'docs/SOURCE_OF_TRUTH.md', 'adapter should expose source of truth');

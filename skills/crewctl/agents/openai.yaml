@@ -1,0 +1,4 @@
+interface:
+  display_name: "Crewctl"
+  short_description: "Operate crewctl workflow control plane"
+  default_prompt: "Use crewctl to drive this project through planner, implementer, auditor, and QC roles."

@@ -1,6 +1,6 @@
 # OpenClaw Adapter
 
-Crewctl's core is intentionally portable. OpenClaw can act as an adapter/runtime around the same state and artifact contract.
+Crewctl's core is intentionally portable. OpenClaw can act as the first adapter/runtime around the same state and artifact contract used by other runtimes.
 
 ## Basic mode
 
@@ -38,11 +38,14 @@ Every worker should update its matching artifact:
 ## Adapter helper
 
 ```bash
+npm run agent:runtime-adapter
 npm run agent:openclaw-adapter
 npm run agent:source-of-truth
 ```
 
-`agent:openclaw-adapter` emits a JSON object with current state, next role, required artifact, helper commands, stop conditions, source-of-truth references, role command map, artifact list, and suggested prompt.
+`agent:runtime-adapter` emits a JSON object with current state, next role, required artifact, helper commands, stop conditions, source-of-truth references, role command map, artifact list, adapter contract, and suggested prompt.
+
+`agent:openclaw-adapter` is a compatibility alias that emits the same contract with `adapter` set to `openclaw`.
 
 `agent:source-of-truth` emits the durable planning/reference anchor so an external orchestrator can recover after context loss.
 

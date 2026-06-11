@@ -1,8 +1,50 @@
-﻿{
+{
   "name": "crewctl",
   "version": "0.1.0",
+  "description": "Deterministic workflow control plane for coding agents.",
   "type": "module",
-  "private": true,
+  "license": "MIT",
+  "author": "Caya",
+  "homepage": "https://github.com/caya8205-2/crewctl#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/caya8205-2/crewctl.git"
+  },
+  "bugs": {
+    "url": "https://github.com/caya8205-2/crewctl/issues"
+  },
+  "keywords": [
+    "agent",
+    "workflow",
+    "orchestration",
+    "codex",
+    "openclaw",
+    "mcp",
+    "cli"
+  ],
+  "bin": {
+    "crewctl": "bin/crewctl.mjs"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "templates/",
+    "prompts/",
+    "skills/",
+    "scripts/",
+    "docs/",
+    "examples/",
+    "crewctl.config.json",
+    "OPENCLAW_ADAPTER.md",
+    "OPENCLAW_WORKFLOW.md",
+    "REAL_WORKERS.md",
+    "ROADMAP.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "agent:init": "node src/runner.mjs init",
     "agent:status": "node src/runner.mjs status",
@@ -21,11 +63,14 @@
     "agent:run": "node src/runner.mjs run",
     "agent:role-prompt": "node src/runner.mjs role-prompt",
     "agent:complete-role": "node src/runner.mjs complete-role",
+    "agent:runtime-adapter": "node src/runner.mjs runtime-adapter",
     "agent:openclaw-adapter": "node src/runner.mjs openclaw-adapter",
     "agent:source-of-truth": "node src/runner.mjs source-of-truth",
     "agent:checks": "node src/runner.mjs checks",
+    "skill:install-codex": "node scripts/install-codex-skill.mjs",
+    "skill:probe": "python skills/crewctl/scripts/probe.py",
     "check": "node src/runner.mjs validate",
-    "test:smoke": "node tests/smoke.mjs"
+    "test:smoke": "node tests/smoke.mjs",
+    "prepack": "npm run check"
   }
 }
-

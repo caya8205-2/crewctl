@@ -95,19 +95,24 @@ Status: in progress
 Status: in progress
 
 ### Goals
+- Generalize runtime adapter metadata while keeping OpenClaw as the first native runtime
 - Use OpenClaw as orchestrator/runtime instead of only local CLI
 - Spawn role workers as subagents
 
 ### Deliverables
+- runtime-neutral adapter contract
 - role -> subagent mapping
+- `npm run agent:runtime-adapter`
 - `npm run agent:openclaw-adapter`
 - `npm run agent:source-of-truth`
+- runtime adapter docs
+- project-local Codex skill package
 - state-aware subagent handoff docs
 - OpenClaw orchestration wrapper
 - progress updates via OpenClaw session
 
 ### Exit Criteria
-- `crewctl` can be operated from OpenClaw end-to-end
+- `crewctl` can be operated from OpenClaw end-to-end through the same adapter contract other runtimes can consume
 
 ---
 
@@ -125,6 +130,8 @@ Status: not started
 - sample workflows
 - publishing checklist
 - release/versioning strategy
+- npm package metadata and CLI bin
+- GitHub CI and manual npm publish workflow
 
 ### Exit Criteria
 - New user can clone repo, run scaffold, and understand the workflow quickly
@@ -139,7 +146,7 @@ These priorities were reconstructed from the implementation state and external/i
 2. Make artifacts mandatory and guarded, not decorative.
 3. Make QC depend on structured evidence.
 4. Use OpenClaw as the first real worker runtime through role prompts and adapter metadata.
-5. Keep `docs/SOURCE_OF_TRUTH.md` and this roadmap updated before long work ends.
+5. Keep runtime adapter docs, `docs/SOURCE_OF_TRUTH.md`, and this roadmap updated before long work ends.
 
 ## Nice-to-have Later
 - branch isolation helpers
@@ -150,4 +157,6 @@ These priorities were reconstructed from the implementation state and external/i
 - repo context summarizer
 - diff-aware retries
 - persistent run storage beyond `.agent/`
+- Codex skill and plugin wrappers
+- MCP server wrapper
 

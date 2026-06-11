@@ -14,7 +14,10 @@ const REQUIRED_FILES = [
   '.agent/implementation-report.md', '.agent/audit.md', '.agent/qc.json',
   '.agent/check-results.json', '.agent/history.md', 'templates/planner.md', 'templates/implementer.md',
   'templates/auditor.md', 'templates/qc.md', 'README.md', 'package.json', 'crewctl.config.json',
-  'docs/SOURCE_OF_TRUTH.md', 'docs/PUBLISHING_CHECKLIST.md'
+  'docs/SOURCE_OF_TRUTH.md', 'docs/RUNTIME_ADAPTERS.md', 'docs/PUBLISHING_CHECKLIST.md',
+  'skills/crewctl/SKILL.md', 'skills/crewctl/agents/openai.yaml', 'skills/crewctl/scripts/probe.py',
+  'scripts/install-codex-skill.mjs', 'bin/crewctl.mjs', '.github/workflows/ci.yml',
+  '.github/workflows/npm-publish.yml', '.github/pull_request_template.md'
 ];
 
 const DEFAULT_CONFIG = {
@@ -448,10 +451,12 @@ function cmdCompleteRole() {
   });
 }
 
-function cmdOpenClawAdapter() {
+function buildRuntimeAdapterPayload(adapterName) {
   ensureState();
   const state = loadState();
   const config = loadConfig();
+  const runtime = config.runtime ?? {};
+  const selectedAdapter = adapterName ?? runtime.preferredAdapter ?? 'generic-cli';
   const resolvedRole = resolveRoleFromState(state);
   const requiredArtifact = resolvedRole === 'planner'
     ? '.agent/plan.md'
@@ -462,10 +467,13 @@ function cmdOpenClawAdapter() {
         : resolvedRole === 'qc'
           ? '.agent/qc.json'
           : null;
-  const adapter = {
+  return {
     project: state.project,
     objective: state.objective,
     status: state.status,
+    adapter: selectedAdapter,
+    adapterKind: selectedAdapter === 'openclaw' ? 'openclaw' : 'generic-cli',
+    compatibilityAliases: selectedAdapter === 'openclaw' ? ['agent:openclaw-adapter'] : [],
     next: getNext(state),
     resolvedRole,
     requiredArtifact,
@@ -476,7 +484,7 @@ function cmdOpenClawAdapter() {
     checkCommand: 'npm run agent:checks',
     statusCommand: 'npm run agent:status',
     rolePromptCommand: resolvedRole ? `npm run agent:role-prompt -- ${resolvedRole}` : 'npm run agent:role-prompt',
-    runtime: config.runtime,
+    runtime,
     sourceOfTruth: config.sourceOfTruth ?? null,
     stopConditions: ['DONE', 'BLOCKED'],
     roleCommandMap: {
@@ -486,8 +494,23 @@ function cmdOpenClawAdapter() {
       qc: 'npm run agent:run-qc'
     },
     artifacts: REQUIRED_FILES.filter((p) => p.startsWith('.agent/')),
+    adapterContract: {
+      controlPlane: 'crewctl CLI owns state transitions, artifact validation, retries, locks, and evidence checks.',
+      workerPlane: 'The selected runtime provides model/tool execution and updates the required artifact.',
+      completionRule: 'A pass transition must go through agent:complete-role so crewctl can validate the role artifact.'
+    },
     suggestedPrompt: `Run crewctl for objective: ${state.objective}. Read .agent/workstate.json, execute the next role, update required artifacts, then report status.`
   };
+}
+
+function cmdRuntimeAdapter() {
+  const adapterName = process.argv[3] ?? null;
+  const adapter = buildRuntimeAdapterPayload(adapterName);
+  console.log(JSON.stringify(adapter, null, 2));
+}
+
+function cmdOpenClawAdapter() {
+  const adapter = buildRuntimeAdapterPayload('openclaw');
   console.log(JSON.stringify(adapter, null, 2));
 }
 
@@ -512,6 +535,6 @@ switch (command) {
   case 'init': cmdInit(); break; case 'status': cmdStatus(); break; case 'next': cmdNext(); break; case 'transition': cmdTransition(); break; case 'validate': cmdValidate(); break;
   case 'checks': cmdChecks(); break;
   case 'run-planner': cmdRunPlanner(); break; case 'run-implementer': cmdRunImplementer(); break; case 'run-auditor': cmdRunAuditor(); break; case 'run-qc': cmdRunQc(); break;
-  case 'new-task': cmdNewTask(); break; case 'continue': cmdContinue(); break; case 'run': cmdRun(); break; case 'role-prompt': cmdRolePrompt(); break; case 'complete-role': cmdCompleteRole(); break; case 'openclaw-adapter': cmdOpenClawAdapter(); break; case 'source-of-truth': cmdSourceOfTruth(); break;
+  case 'new-task': cmdNewTask(); break; case 'continue': cmdContinue(); break; case 'run': cmdRun(); break; case 'role-prompt': cmdRolePrompt(); break; case 'complete-role': cmdCompleteRole(); break; case 'runtime-adapter': cmdRuntimeAdapter(); break; case 'openclaw-adapter': cmdOpenClawAdapter(); break; case 'source-of-truth': cmdSourceOfTruth(); break;
   default: console.error(`Unknown command: ${command}`); process.exitCode = 1;
 }

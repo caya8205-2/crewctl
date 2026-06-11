@@ -33,6 +33,7 @@ Crewctl does **not** include built-in provider clients yet. There is no OpenAI/A
 
 2. Get current adapter state and durable source-of-truth reference:
    ```bash
+   npm run agent:runtime-adapter
    npm run agent:openclaw-adapter
    npm run agent:source-of-truth
    ```
@@ -90,7 +91,7 @@ Pseudo-flow for OpenClaw main agent:
 
 ```txt
 while state not DONE/BLOCKED:
-  run: npm run agent:openclaw-adapter
+  run: npm run agent:runtime-adapter
   run: npm run agent:source-of-truth
   run: npm run agent:role-prompt
   spawn role subagent with generated prompt

@@ -3,7 +3,7 @@
 Crewctl can run in two modes:
 
 1. **Deterministic mode** - local dummy executors (`agent:run-planner`, `agent:run-implementer`, etc.)
-2. **Real worker mode** - external AI/OpenClaw workers update artifacts, then crewctl records role completion
+2. **Real worker mode** - external AI/runtime workers update artifacts, then crewctl records role completion
 
 ## Generate a role prompt
 
@@ -46,6 +46,20 @@ Failure examples:
 ```bash
 npm run agent:complete-role -- auditor fail
 npm run agent:complete-role -- qc fail
+```
+
+## Adapter metadata
+
+Runtime orchestrators should start by reading:
+
+```bash
+npm run agent:runtime-adapter
+```
+
+OpenClaw can also use the compatibility alias:
+
+```bash
+npm run agent:openclaw-adapter
 ```
 
 ## Suggested OpenClaw usage
