@@ -19,6 +19,7 @@ This resolves the current role from `.agent/workstate.json` and emits JSON conta
 - required output artifact
 - allowed/forbidden globs
 - the role prompt text
+- the durable source-of-truth doc in `docs/SOURCE_OF_TRUTH.md`
 
 You can also request a role explicitly:
 
@@ -68,3 +69,5 @@ npm run agent:complete-role -- qc fail
 ## Important
 
 Real workers must not fake evidence. If checks were not run, artifacts must say `not-run` instead of `pass`.
+
+`npm run agent:complete-role -- <role> pass` is a guarded transition, not a blind acknowledgement. Workers must produce a valid artifact before the pass transition will be accepted.

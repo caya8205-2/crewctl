@@ -21,7 +21,7 @@ Important: crewctl does **not** include built-in provider clients yet. There is 
 
 ## Current status
 
-Current phase: local deterministic scaffold.
+Current phase: deterministic local pipeline with early OpenClaw handoff support.
 
 Already implemented:
 - repo scaffold
@@ -29,14 +29,19 @@ Already implemented:
 - state machine file
 - runner CLI
 - lock guard for state mutations
-- planner dummy executor
-- implementer dummy executor
-- role contract templates
+- planner / implementer / auditor / QC deterministic executors
+- role contract templates and role prompts
 - history logging
+- retry / block handling
+- guarded `agent:complete-role` artifact validation
+- structured check evidence in `.agent/check-results.json`
+- OpenClaw adapter/status prompt commands
+- smoke coverage for happy path, QC recovery, and manual handoff guard
+- durable planning docs under `docs/`
 
 Not implemented yet:
-- real hard checks beyond basic file validation
-- real AI workers
+- real AI workers in code (only external/runtime handoff contract exists)
+- rich configured checks for build/lint/typecheck
 - full OpenClaw-native orchestration wrapper
 
 ## Repo structure
@@ -97,6 +102,7 @@ npm run agent:run
 npm run agent:role-prompt
 npm run agent:complete-role -- planner pass
 npm run agent:openclaw-adapter
+npm run agent:source-of-truth
 npm run agent:checks
 npm run check
 npm run test:smoke
@@ -112,6 +118,9 @@ npm run test:smoke
 - actual AI workers can be plugged in later without changing the core artifact contract
 - real worker handoff is documented in `REAL_WORKERS.md`
 - workflow/runtime/check defaults live in `crewctl.config.json`
+- durable planning references live in `docs/SOURCE_OF_TRUTH.md`
+- `agent:complete-role` validates role artifacts before accepting a `pass` result
+- `agent:source-of-truth` exposes the current planning/reference anchor for external orchestrators
 
 ## Workflow shape
 
@@ -142,6 +151,7 @@ OpenClaw orchestrator
   -> spawn role subagent
   -> worker updates artifact
   -> npm run agent:complete-role -- <role> pass/fail
+  -> crewctl validates required artifact before accepting pass
   -> repeat until DONE/BLOCKED
 ```
 
@@ -149,6 +159,8 @@ See:
 - `OPENCLAW_WORKFLOW.md`
 - `OPENCLAW_ADAPTER.md`
 - `prompts/openclaw-orchestrator.md`
+- `docs/SOURCE_OF_TRUTH.md`
+- `docs/PUBLISHING_CHECKLIST.md`
 
 ## Long-term direction
 

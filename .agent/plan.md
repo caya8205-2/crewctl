@@ -1,10 +1,10 @@
 # Plan
 
 ## Objective
-Smoke forced qc failure
+Smoke manual completion guard
 
 ## Scope
-- Implement objective-specific progress for kind: `failure-path`.
+- Implement objective-specific progress for kind: `general`.
 - Preserve crewctl state/artifact contract.
 - Keep changes incremental and auditable.
 
@@ -18,23 +18,17 @@ Smoke forced qc failure
 - Future OpenClaw workers can reuse the same artifact contract.
 
 ## Task Breakdown
-1. Add explicit AUDIT_FAILED and QC_FAILED routing
-2. Ensure retries increment iteration safely
-3. Block when maxIterations is reached
-4. Create test scenarios for forced audit/QC failures
-5. Inspect current state and artifacts
-6. Implement the smallest useful change
-7. Record evidence in implementation report
-8. Audit output against acceptance criteria
-9. Run QC and route pass/fail
+1. Inspect current state and artifacts
+2. Implement the smallest useful change
+3. Record evidence in implementation report
+4. Audit output against acceptance criteria
+5. Run QC and route pass/fail
 
 ## Acceptance Criteria
 - `npm run check` validates required files
 - `npm run agent:status` prints current state
 - Workflow history records role transitions
-- AUDIT_FAILED routes back to implementer
-- QC_FAILED routes back to implementer or BLOCKED
-- Max iteration guard can block repeated failures
+- Run can progress from PLANNING to DONE
 
 ## Allowed Files
 - src/**

@@ -1,20 +1,20 @@
 {
   "project": "crewctl",
-  "objective": "Smoke forced qc failure",
-  "status": "DONE",
-  "currentIteration": 2,
+  "objective": "Smoke manual completion guard",
+  "status": "READY_FOR_IMPLEMENT",
+  "currentIteration": 0,
   "maxIterations": 5,
-  "currentRole": "done",
-  "lastCompletedRole": "qc",
-  "nextRole": null,
+  "currentRole": "orchestrator",
+  "lastCompletedRole": "planner",
+  "nextRole": "implementer",
   "activeTask": {
-    "id": "task-017",
-    "title": "Smoke forced qc failure",
+    "id": "task-029",
+    "title": "Smoke manual completion guard",
     "priority": "normal"
   },
   "qualityGate": {
     "minScore": 85,
-    "lastScore": 100,
+    "lastScore": null,
     "failedReasons": []
   },
   "allowedGlobs": [
@@ -30,6 +30,6 @@
     "infra/prod/**"
   ],
   "blockers": [],
-  "updatedAt": "2026-06-08T20:25:44.417Z",
-  "taskCounter": 17
+  "updatedAt": "2026-06-08T21:57:14.488Z",
+  "taskCounter": 29
 }

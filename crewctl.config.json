@@ -9,9 +9,19 @@
     "build": "",
     "lint": "",
     "test": "",
-    "typecheck": ""
+    "typecheck": "",
+    "validate": "node src/runner.mjs validate"
   },
   "runtime": {
     "preferredAdapter": "openclaw"
+  },
+  "sourceOfTruth": {
+    "primaryDoc": "docs/SOURCE_OF_TRUTH.md",
+    "references": [
+      "OPENCLAW_WORKFLOW.md",
+      "OPENCLAW_ADAPTER.md",
+      "REAL_WORKERS.md",
+      "ROADMAP.md"
+    ]
   }
 }

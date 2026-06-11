@@ -12,8 +12,9 @@ const STALE_LOCK_MS = 5 * 60 * 1000;
 const REQUIRED_FILES = [
   '.agent/workstate.json', '.agent/context.md', '.agent/plan.md',
   '.agent/implementation-report.md', '.agent/audit.md', '.agent/qc.json',
-  '.agent/history.md', 'templates/planner.md', 'templates/implementer.md',
-  'templates/auditor.md', 'templates/qc.md', 'README.md', 'package.json', 'crewctl.config.json'
+  '.agent/check-results.json', '.agent/history.md', 'templates/planner.md', 'templates/implementer.md',
+  'templates/auditor.md', 'templates/qc.md', 'README.md', 'package.json', 'crewctl.config.json',
+  'docs/SOURCE_OF_TRUTH.md', 'docs/PUBLISHING_CHECKLIST.md'
 ];
 
 const DEFAULT_CONFIG = {
@@ -107,6 +108,25 @@ function summarizeChecks(results) {
   return results.map((r) => `- ${r.name}: ${r.status}${r.command ? ` (${r.command})` : ''}`).join('\n');
 }
 
+function readCheckResults() {
+  const file = path.join(agentDir, 'check-results.json');
+  if (!fs.existsSync(file)) return null;
+  return readJson(file);
+}
+
+function buildCheckResultsArtifact(requiredFiles, configuredChecks) {
+  return {
+    generatedAt: new Date().toISOString(),
+    requiredFiles,
+    configuredChecks,
+    summary: {
+      requiredFilesOk: requiredFiles.ok,
+      configuredChecksOk: configuredChecks.every((c) => c.ok),
+      failingConfiguredChecks: configuredChecks.filter((c) => !c.ok).map((c) => c.name)
+    }
+  };
+}
+
 function normalizeObjective(objective) {
   const lower = objective.toLowerCase();
   if (lower.includes('fail') || lower.includes('failure')) return 'failure-path';
@@ -150,7 +170,17 @@ function cmdInit() { ensureState(); const s = loadState(); console.log(JSON.stri
 function cmdStatus() { ensureState(); console.log(JSON.stringify(loadState(), null, 2)); }
 function cmdNext() { ensureState(); const s = loadState(); console.log(JSON.stringify({ currentStatus: s.status, ...getNext(s) }, null, 2)); }
 function cmdValidate() { const r = validateRequiredFiles(); if (!r.ok) { console.error(JSON.stringify({ ok: false, missing: r.missing }, null, 2)); process.exitCode = 1; return; } const s = loadState(); console.log(JSON.stringify({ ok: true, status: s.status, next: getNext(s), checkedFiles: r.checkedFiles }, null, 2)); }
-function cmdChecks() { console.log(JSON.stringify({ ok: true, checks: runConfiguredChecks() }, null, 2)); }
+function cmdChecks() {
+  const checks = runConfiguredChecks();
+  const ok = checks.every((check) => check.ok);
+  const payload = { ok, checks };
+  if (!ok) {
+    console.error(JSON.stringify(payload, null, 2));
+    process.exitCode = 1;
+    return;
+  }
+  console.log(JSON.stringify(payload, null, 2));
+}
 
 function cmdTransition() {
   return withLock('transition', () => {
@@ -191,12 +221,14 @@ function cmdRunImplementer(options = {}) {
     const checkResult = validateRequiredFiles();
     const commandChecks = runConfiguredChecks();
     const commandChecksOk = commandChecks.every((c) => c.ok);
+    const checkArtifact = buildCheckResultsArtifact(checkResult, commandChecks);
     const previousFailures = state.qualityGate.failedReasons?.length ? state.qualityGate.failedReasons.map((x) => `- ${x}`).join('\n') : '- None.';
     const report = `# Implementation Report\n\n## Summary\nDeterministic implementer processed objective: ${state.objective}\n\n## Changed Files\n- .agent/implementation-report.md\n- .agent/workstate.json\n- .agent/history.md\n\n## Decisions\n- Preserve current scaffold contract.\n- Treat validation output and configured checks as implementation evidence.\n- Retry context from previous failures is captured below.\n\n## Previous Failure Context\n${previousFailures}\n\n## Checks Run\n- command: npm run check\n  result: ${checkResult.ok ? 'pass' : 'fail'}\n  notes: ${checkResult.ok ? `Validated ${checkResult.checkedFiles} required files.` : `Missing files: ${checkResult.missing.join(', ')}`}\n\n## Configured Command Checks\n${summarizeChecks(commandChecks)}\n\n## Known Issues\n${checkResult.ok && commandChecksOk ? '- None from scaffold/configured validation.' : '- One or more required/configured checks failed; audit should inspect this pass carefully.'}\n\n## Next Recommended State\nREADY_FOR_AUDIT\n`;
     writeAgentFile('implementation-report.md', report);
+    writeAgentFile('check-results.json', `${JSON.stringify(checkArtifact, null, 2)}\n`);
     state.lastCompletedRole = 'implementer'; state.currentRole = 'orchestrator'; state.nextRole = 'auditor'; state.status = 'READY_FOR_AUDIT';
     saveState(state); appendHistory(`- ${new Date().toISOString()}: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)`);
-    return log({ ok: true, status: state.status, nextRole: state.nextRole, artifact: '.agent/implementation-report.md', checks: commandChecks }, options);
+    return log({ ok: true, status: state.status, nextRole: state.nextRole, artifact: '.agent/implementation-report.md', checksArtifact: '.agent/check-results.json', checks: commandChecks }, options);
   });
 }
 
@@ -206,7 +238,7 @@ function cmdRunAuditor(options = {}) {
     if (state.status !== 'READY_FOR_AUDIT') return fail(`Auditor can only run from READY_FOR_AUDIT, current status is ${state.status}`);
     const previous = state.status; state.currentRole = 'auditor'; state.status = 'AUDITING'; saveState(state);
     appendHistory(`- ${new Date().toISOString()}: orchestrator/${previous} -> auditor/AUDITING`);
-    const plan = readText('.agent/plan.md'); const implementation = readText('.agent/implementation-report.md'); const checkResult = validateRequiredFiles();
+    const plan = readText('.agent/plan.md'); const implementation = readText('.agent/implementation-report.md'); const checkResult = validateRequiredFiles(); const checkResults = readCheckResults();
     const forceFail = process.env.CREWCTL_FORCE_AUDIT_FAIL === '1' || plan.includes('CREWCTL_FORCE_AUDIT_FAIL');
     const checks = [
       { name: 'Plan has Acceptance Criteria', pass: plan.includes('## Acceptance Criteria') },
@@ -214,6 +246,8 @@ function cmdRunAuditor(options = {}) {
       { name: 'Implementation report exists', pass: implementation.includes('# Implementation Report') },
       { name: 'Implementation checks passed', pass: implementation.includes('result: pass') },
       { name: 'Configured command checks section exists', pass: implementation.includes('## Configured Command Checks') },
+      { name: 'Structured check results artifact exists', pass: Boolean(checkResults) },
+      { name: 'Structured check results report required files pass', pass: checkResults?.summary?.requiredFilesOk === true },
       { name: 'Required scaffold files exist', pass: checkResult.ok },
       { name: 'No forced audit failure', pass: !forceFail }
     ];
@@ -234,14 +268,15 @@ function cmdRunQc(options = {}) {
     if (state.status !== 'READY_FOR_QC') return fail(`QC can only run from READY_FOR_QC, current status is ${state.status}`);
     const previous = state.status; state.currentRole = 'qc'; state.status = 'QC'; saveState(state);
     appendHistory(`- ${new Date().toISOString()}: orchestrator/${previous} -> qc/QC`);
-    const audit = readText('.agent/audit.md'); const implementation = readText('.agent/implementation-report.md'); const checkResult = validateRequiredFiles();
+    const audit = readText('.agent/audit.md'); const implementation = readText('.agent/implementation-report.md'); const checkResult = validateRequiredFiles(); const checkResults = readCheckResults();
     const forceFail = process.env.CREWCTL_FORCE_QC_FAIL === '1';
-    const commandCheckFailure = implementation.includes(': fail (');
+    const commandChecksOk = checkResults?.summary?.configuredChecksOk === true;
     const hardChecks = [
       { name: 'Required files exist', pass: checkResult.ok, penalty: 30, routeBackTo: 'implementer' },
       { name: 'Audit verdict is PASS', pass: audit.includes('## Verdict\nPASS'), penalty: 35, routeBackTo: 'implementer' },
       { name: 'Implementation report has passing check evidence', pass: implementation.includes('result: pass'), penalty: 20, routeBackTo: 'implementer' },
-      { name: 'Configured command checks did not fail', pass: !commandCheckFailure, penalty: 25, routeBackTo: 'implementer' },
+      { name: 'Structured check results artifact exists', pass: Boolean(checkResults), penalty: 25, routeBackTo: 'implementer' },
+      { name: 'Configured command checks did not fail', pass: commandChecksOk, penalty: 25, routeBackTo: 'implementer' },
       { name: 'Audit recommends READY_FOR_QC', pass: audit.includes('READY_FOR_QC'), penalty: 10, routeBackTo: 'auditor' },
       { name: 'Workflow iteration is within maxIterations', pass: state.currentIteration <= state.maxIterations, penalty: 50, routeBackTo: 'human' },
       { name: 'No forced QC failure', pass: !forceFail, penalty: 90, routeBackTo: 'implementer' }
@@ -272,6 +307,7 @@ function cmdNewTask() {
     state.objective = objective; state.status = 'PLANNING'; state.currentIteration = 0; state.currentRole = 'planner'; state.lastCompletedRole = 'orchestrator'; state.nextRole = 'planner';
     state.activeTask = { id: taskId, title: objective, priority: 'normal' }; state.taskCounter = nextIteration; state.qualityGate.lastScore = null; state.qualityGate.failedReasons = []; state.blockers = [];
     writeAgentFile('plan.md', `# Plan\n\nPending planner output for: ${objective}\n`); writeAgentFile('implementation-report.md', '# Implementation Report\n\nPending.\n'); writeAgentFile('audit.md', '# Audit Report\n\nPending.\n');
+    writeAgentFile('check-results.json', `${JSON.stringify({ generatedAt: null, requiredFiles: { ok: false, missing: [], checkedFiles: REQUIRED_FILES.length }, configuredChecks: [], summary: { requiredFilesOk: false, configuredChecksOk: false, failingConfiguredChecks: [] } }, null, 2)}\n`);
     writeAgentFile('qc.json', `${JSON.stringify({ score: null, passed: false, threshold: state.qualityGate.minScore ?? 85, categories: { correctness: 0, tests: 0, architecture: 0, maintainability: 0, security: 0 }, failureReasons: [], routeBackTo: null }, null, 2)}\n`);
     saveState(state); appendHistory(`- ${new Date().toISOString()}: orchestrator/${previousStatus} -> planner/PLANNING (new task ${taskId}: ${objective})`);
     console.log(JSON.stringify({ ok: true, taskId, status: state.status, nextRole: state.nextRole, objective, config: loadConfig() }, null, 2));
@@ -324,7 +360,7 @@ function cmdRolePrompt() {
     objective: state.objective,
     activeTask: state.activeTask,
     nextRole: state.nextRole,
-    filesToRead: ['.agent/workstate.json', '.agent/context.md', '.agent/plan.md', '.agent/implementation-report.md', '.agent/audit.md', '.agent/qc.json', `templates/${role}.md`, `prompts/${role}.md`, 'crewctl.config.json'],
+    filesToRead: ['.agent/workstate.json', '.agent/context.md', '.agent/plan.md', '.agent/implementation-report.md', '.agent/audit.md', '.agent/qc.json', '.agent/check-results.json', `templates/${role}.md`, `prompts/${role}.md`, 'crewctl.config.json', 'docs/SOURCE_OF_TRUTH.md'],
     requiredArtifact: role === 'planner' ? '.agent/plan.md' : role === 'implementer' ? '.agent/implementation-report.md' : role === 'auditor' ? '.agent/audit.md' : '.agent/qc.json',
     allowedGlobs: state.allowedGlobs,
     forbiddenGlobs: state.forbiddenGlobs,
@@ -332,6 +368,48 @@ function cmdRolePrompt() {
     prompt: rolePrompt
   };
   console.log(JSON.stringify(payload, null, 2));
+}
+
+function artifactValidation(role) {
+  const checks = {
+    planner: () => {
+      const text = readText('.agent/plan.md');
+      return {
+        artifact: '.agent/plan.md',
+        ok: text.includes('# Plan') && text.includes('## Acceptance Criteria') && !text.includes('Pending planner output'),
+        reason: 'Planner artifact must contain # Plan, ## Acceptance Criteria, and must not be pending placeholder text.'
+      };
+    },
+    implementer: () => {
+      const text = readText('.agent/implementation-report.md');
+      return {
+        artifact: '.agent/implementation-report.md',
+        ok: text.includes('# Implementation Report') && text.includes('## Checks Run') && !text.includes('Pending.'),
+        reason: 'Implementer artifact must contain # Implementation Report, ## Checks Run, and must not be pending placeholder text.'
+      };
+    },
+    auditor: () => {
+      const text = readText('.agent/audit.md');
+      return {
+        artifact: '.agent/audit.md',
+        ok: text.includes('# Audit Report') && text.includes('## Verdict') && !text.includes('Pending.'),
+        reason: 'Auditor artifact must contain # Audit Report, ## Verdict, and must not be pending placeholder text.'
+      };
+    },
+    qc: () => {
+      const qc = readJson(path.join(agentDir, 'qc.json'));
+      return {
+        artifact: '.agent/qc.json',
+        ok: typeof qc.score === 'number' && typeof qc.passed === 'boolean' && typeof qc.threshold === 'number',
+        reason: 'QC artifact must be valid JSON with numeric score, boolean passed, and numeric threshold.'
+      };
+    }
+  };
+  try {
+    return checks[role]?.() ?? { artifact: null, ok: false, reason: `Unknown role: ${role}` };
+  } catch (error) {
+    return { artifact: null, ok: false, reason: error.message };
+  }
 }
 
 function cmdCompleteRole() {
@@ -348,6 +426,14 @@ function cmdCompleteRole() {
       qc: { pass: { status: 'DONE', nextRole: null }, fail: { status: 'QC_FAILED', nextRole: 'implementer' } }
     };
     const mapping = transitions[role]; if (!mapping) return fail(`Unknown role: ${role}`);
+    if (verdict === 'pass') {
+      const validation = artifactValidation(role);
+      if (!validation.ok) {
+        console.error(JSON.stringify({ ok: false, reason: 'Role artifact validation failed.', role, artifact: validation.artifact, detail: validation.reason }, null, 2));
+        process.exitCode = 1;
+        return;
+      }
+    }
     const transition = verdict === 'pass' ? mapping.pass : mapping.fail; const previousStatus = state.status;
     if (role === 'implementer' && state.currentIteration >= state.maxIterations && verdict !== 'pass') {
       applyBlock(state, 'Max iterations reached during manual worker completion', state.qualityGate.failedReasons ?? []);
@@ -363,9 +449,62 @@ function cmdCompleteRole() {
 }
 
 function cmdOpenClawAdapter() {
-  ensureState(); const state = loadState(); const config = loadConfig();
-  const adapter = { project: state.project, status: state.status, next: getNext(state), resolvedRole: resolveRoleFromState(state), runtime: config.runtime, roleCommandMap: { planner: 'npm run agent:run-planner', implementer: 'npm run agent:run-implementer', auditor: 'npm run agent:run-auditor', qc: 'npm run agent:run-qc' }, artifacts: REQUIRED_FILES.filter((p) => p.startsWith('.agent/')), suggestedPrompt: `Run crewctl for objective: ${state.objective}. Read .agent/workstate.json, execute the next role, update required artifacts, then report status.` };
+  ensureState();
+  const state = loadState();
+  const config = loadConfig();
+  const resolvedRole = resolveRoleFromState(state);
+  const requiredArtifact = resolvedRole === 'planner'
+    ? '.agent/plan.md'
+    : resolvedRole === 'implementer'
+      ? '.agent/implementation-report.md'
+      : resolvedRole === 'auditor'
+        ? '.agent/audit.md'
+        : resolvedRole === 'qc'
+          ? '.agent/qc.json'
+          : null;
+  const adapter = {
+    project: state.project,
+    objective: state.objective,
+    status: state.status,
+    next: getNext(state),
+    resolvedRole,
+    requiredArtifact,
+    validationCommand: resolvedRole ? `npm run agent:complete-role -- ${resolvedRole} pass` : null,
+    failCommand: resolvedRole ? `npm run agent:complete-role -- ${resolvedRole} fail` : null,
+    continueCommand: 'npm run agent:continue',
+    runCommand: 'npm run agent:run',
+    checkCommand: 'npm run agent:checks',
+    statusCommand: 'npm run agent:status',
+    rolePromptCommand: resolvedRole ? `npm run agent:role-prompt -- ${resolvedRole}` : 'npm run agent:role-prompt',
+    runtime: config.runtime,
+    sourceOfTruth: config.sourceOfTruth ?? null,
+    stopConditions: ['DONE', 'BLOCKED'],
+    roleCommandMap: {
+      planner: 'npm run agent:run-planner',
+      implementer: 'npm run agent:run-implementer',
+      auditor: 'npm run agent:run-auditor',
+      qc: 'npm run agent:run-qc'
+    },
+    artifacts: REQUIRED_FILES.filter((p) => p.startsWith('.agent/')),
+    suggestedPrompt: `Run crewctl for objective: ${state.objective}. Read .agent/workstate.json, execute the next role, update required artifacts, then report status.`
+  };
   console.log(JSON.stringify(adapter, null, 2));
+}
+
+function cmdSourceOfTruth() {
+  ensureState();
+  const state = loadState();
+  const config = loadConfig();
+  const payload = {
+    project: state.project,
+    objective: state.objective,
+    status: state.status,
+    primaryDoc: config.sourceOfTruth?.primaryDoc ?? 'docs/SOURCE_OF_TRUTH.md',
+    references: config.sourceOfTruth?.references ?? [],
+    roadmap: 'ROADMAP.md',
+    currentTask: state.activeTask ?? null
+  };
+  console.log(JSON.stringify(payload, null, 2));
 }
 
 const command = process.argv[2] ?? 'status';
@@ -373,6 +512,6 @@ switch (command) {
   case 'init': cmdInit(); break; case 'status': cmdStatus(); break; case 'next': cmdNext(); break; case 'transition': cmdTransition(); break; case 'validate': cmdValidate(); break;
   case 'checks': cmdChecks(); break;
   case 'run-planner': cmdRunPlanner(); break; case 'run-implementer': cmdRunImplementer(); break; case 'run-auditor': cmdRunAuditor(); break; case 'run-qc': cmdRunQc(); break;
-  case 'new-task': cmdNewTask(); break; case 'continue': cmdContinue(); break; case 'run': cmdRun(); break; case 'role-prompt': cmdRolePrompt(); break; case 'complete-role': cmdCompleteRole(); break; case 'openclaw-adapter': cmdOpenClawAdapter(); break;
+  case 'new-task': cmdNewTask(); break; case 'continue': cmdContinue(); break; case 'run': cmdRun(); break; case 'role-prompt': cmdRolePrompt(); break; case 'complete-role': cmdCompleteRole(); break; case 'openclaw-adapter': cmdOpenClawAdapter(); break; case 'source-of-truth': cmdSourceOfTruth(); break;
   default: console.error(`Unknown command: ${command}`); process.exitCode = 1;
 }

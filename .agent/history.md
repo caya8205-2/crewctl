@@ -186,3 +186,115 @@
 - 2026-06-08T20:25:44.354Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
 - 2026-06-08T20:25:44.415Z: orchestrator/READY_FOR_QC -> qc/QC
 - 2026-06-08T20:25:44.418Z: qc/QC -> done/DONE (score 100/85)
+- 2026-06-08T20:37:15.848Z: orchestrator/DONE -> planner/PLANNING (new task task-018: Smoke happy path)
+- 2026-06-08T20:37:15.923Z: planner/PLANNING -> orchestrator/READY_FOR_IMPLEMENT (adaptive plan generated: general)
+- 2026-06-08T20:37:15.927Z: orchestrator/READY_FOR_IMPLEMENT -> implementer/IMPLEMENTING
+- 2026-06-08T20:37:15.930Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T20:37:15.933Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T20:37:15.937Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T20:37:15.941Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T20:37:15.944Z: qc/QC -> done/DONE (score 100/85)
+- 2026-06-08T20:37:16.015Z: orchestrator/DONE -> planner/PLANNING (new task task-019: Smoke forced qc failure)
+- 2026-06-08T20:37:16.189Z: planner/PLANNING -> orchestrator/READY_FOR_IMPLEMENT (adaptive plan generated: failure-path)
+- 2026-06-08T20:37:16.192Z: orchestrator/READY_FOR_IMPLEMENT -> implementer/IMPLEMENTING
+- 2026-06-08T20:37:16.196Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T20:37:16.199Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T20:37:16.202Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T20:37:16.204Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T20:37:16.208Z: qc/QC -> orchestrator/QC_FAILED (score 10/85)
+- 2026-06-08T20:37:16.211Z: orchestrator/QC_FAILED -> implementer/IMPLEMENTING
+- 2026-06-08T20:37:16.215Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T20:37:16.218Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T20:37:16.220Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T20:37:16.293Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T20:37:16.295Z: qc/QC -> done/DONE (score 100/85)
+- 2026-06-08T20:37:16.363Z: orchestrator/DONE -> planner/PLANNING (new task task-020: Smoke manual completion guard)
+- 2026-06-08T20:37:16.507Z: planner/PLANNING -> orchestrator/READY_FOR_IMPLEMENT (adaptive plan generated: general)
+- 2026-06-08T20:37:16.582Z: manual planner/READY_FOR_IMPLEMENT -> orchestrator/READY_FOR_IMPLEMENT (pass)
+- 2026-06-08T21:23:32.676Z: orchestrator/READY_FOR_IMPLEMENT -> planner/PLANNING (new task task-021: Smoke happy path)
+- 2026-06-08T21:23:32.737Z: planner/PLANNING -> orchestrator/READY_FOR_IMPLEMENT (adaptive plan generated: general)
+- 2026-06-08T21:23:32.740Z: orchestrator/READY_FOR_IMPLEMENT -> implementer/IMPLEMENTING
+- 2026-06-08T21:23:32.744Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T21:23:32.746Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T21:23:32.749Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T21:23:32.751Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T21:23:32.754Z: qc/QC -> done/DONE (score 100/85)
+- 2026-06-08T21:23:32.821Z: orchestrator/DONE -> planner/PLANNING (new task task-022: Smoke forced qc failure)
+- 2026-06-08T21:23:32.889Z: planner/PLANNING -> orchestrator/READY_FOR_IMPLEMENT (adaptive plan generated: failure-path)
+- 2026-06-08T21:23:32.892Z: orchestrator/READY_FOR_IMPLEMENT -> implementer/IMPLEMENTING
+- 2026-06-08T21:23:32.896Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T21:23:32.899Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T21:23:32.902Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T21:23:32.904Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T21:23:32.907Z: qc/QC -> orchestrator/QC_FAILED (score 10/85)
+- 2026-06-08T21:23:32.909Z: orchestrator/QC_FAILED -> implementer/IMPLEMENTING
+- 2026-06-08T21:23:32.912Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T21:23:32.914Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T21:23:32.916Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T21:23:32.979Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T21:23:32.982Z: qc/QC -> done/DONE (score 100/85)
+- 2026-06-08T21:23:33.045Z: orchestrator/DONE -> planner/PLANNING (new task task-023: Smoke manual completion guard)
+- 2026-06-08T21:23:33.173Z: planner/PLANNING -> orchestrator/READY_FOR_IMPLEMENT (adaptive plan generated: general)
+- 2026-06-08T21:23:33.230Z: manual planner/READY_FOR_IMPLEMENT -> orchestrator/READY_FOR_IMPLEMENT (pass)
+- 2026-06-08T21:24:34.609Z: orchestrator/READY_FOR_IMPLEMENT -> implementer/IMPLEMENTING
+- 2026-06-08T21:24:34.612Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T21:24:34.615Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T21:24:34.617Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T21:24:34.620Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T21:24:34.622Z: qc/QC -> done/DONE (score 100/85)
+- 2026-06-08T21:55:54.082Z: orchestrator/DONE -> planner/PLANNING (new task task-024: Smoke happy path)
+- 2026-06-08T21:55:54.148Z: planner/PLANNING -> orchestrator/READY_FOR_IMPLEMENT (adaptive plan generated: general)
+- 2026-06-08T21:55:54.150Z: orchestrator/READY_FOR_IMPLEMENT -> implementer/IMPLEMENTING
+- 2026-06-08T21:55:54.245Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T21:55:54.250Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T21:55:54.255Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T21:55:54.264Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T21:55:54.268Z: qc/QC -> done/DONE (score 100/85)
+- 2026-06-08T21:55:54.333Z: orchestrator/DONE -> planner/PLANNING (new task task-025: Smoke forced qc failure)
+- 2026-06-08T21:55:54.397Z: planner/PLANNING -> orchestrator/READY_FOR_IMPLEMENT (adaptive plan generated: failure-path)
+- 2026-06-08T21:55:54.399Z: orchestrator/READY_FOR_IMPLEMENT -> implementer/IMPLEMENTING
+- 2026-06-08T21:55:54.486Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T21:55:54.489Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T21:55:54.491Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T21:55:54.495Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T21:55:54.498Z: qc/QC -> orchestrator/QC_FAILED (score 10/85)
+- 2026-06-08T21:55:54.500Z: orchestrator/QC_FAILED -> implementer/IMPLEMENTING
+- 2026-06-08T21:55:54.586Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T21:55:54.588Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T21:55:54.590Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T21:55:54.656Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T21:55:54.660Z: qc/QC -> done/DONE (score 100/85)
+- 2026-06-08T21:55:54.729Z: orchestrator/DONE -> planner/PLANNING (new task task-026: Smoke manual completion guard)
+- 2026-06-08T21:55:54.858Z: planner/PLANNING -> orchestrator/READY_FOR_IMPLEMENT (adaptive plan generated: general)
+- 2026-06-08T21:55:54.939Z: manual planner/READY_FOR_IMPLEMENT -> orchestrator/READY_FOR_IMPLEMENT (pass)
+- 2026-06-08T21:56:32.803Z: orchestrator/READY_FOR_IMPLEMENT -> implementer/IMPLEMENTING
+- 2026-06-08T21:56:32.890Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T21:56:32.894Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T21:56:32.896Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T21:56:32.899Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T21:56:32.901Z: qc/QC -> done/DONE (score 100/85)
+- 2026-06-08T21:57:13.657Z: orchestrator/DONE -> planner/PLANNING (new task task-027: Smoke happy path)
+- 2026-06-08T21:57:13.729Z: planner/PLANNING -> orchestrator/READY_FOR_IMPLEMENT (adaptive plan generated: general)
+- 2026-06-08T21:57:13.732Z: orchestrator/READY_FOR_IMPLEMENT -> implementer/IMPLEMENTING
+- 2026-06-08T21:57:13.830Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T21:57:13.834Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T21:57:13.838Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T21:57:13.841Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T21:57:13.845Z: qc/QC -> done/DONE (score 100/85)
+- 2026-06-08T21:57:13.923Z: orchestrator/DONE -> planner/PLANNING (new task task-028: Smoke forced qc failure)
+- 2026-06-08T21:57:13.988Z: planner/PLANNING -> orchestrator/READY_FOR_IMPLEMENT (adaptive plan generated: failure-path)
+- 2026-06-08T21:57:13.991Z: orchestrator/READY_FOR_IMPLEMENT -> implementer/IMPLEMENTING
+- 2026-06-08T21:57:14.077Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T21:57:14.080Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T21:57:14.084Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T21:57:14.088Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T21:57:14.092Z: qc/QC -> orchestrator/QC_FAILED (score 10/85)
+- 2026-06-08T21:57:14.094Z: orchestrator/QC_FAILED -> implementer/IMPLEMENTING
+- 2026-06-08T21:57:14.182Z: implementer/IMPLEMENTING -> orchestrator/READY_FOR_AUDIT (implementation report generated)
+- 2026-06-08T21:57:14.184Z: orchestrator/READY_FOR_AUDIT -> auditor/AUDITING
+- 2026-06-08T21:57:14.186Z: auditor/AUDITING -> orchestrator/READY_FOR_QC (audit pass)
+- 2026-06-08T21:57:14.246Z: orchestrator/READY_FOR_QC -> qc/QC
+- 2026-06-08T21:57:14.249Z: qc/QC -> done/DONE (score 100/85)
+- 2026-06-08T21:57:14.319Z: orchestrator/DONE -> planner/PLANNING (new task task-029: Smoke manual completion guard)
+- 2026-06-08T21:57:14.432Z: planner/PLANNING -> orchestrator/READY_FOR_IMPLEMENT (adaptive plan generated: general)
+- 2026-06-08T21:57:14.489Z: manual planner/READY_FOR_IMPLEMENT -> orchestrator/READY_FOR_IMPLEMENT (pass)
